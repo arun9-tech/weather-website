@@ -1,0 +1,111 @@
+body {
+    background-color: #f0f2f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+.search-box {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+}
+
+.search-box .form-control {
+    border-right: 0;
+}
+
+.search-box .btn {
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+.search-box #currentLocationBtn {
+    border-radius: 0;
+}
+
+.weather-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease-in-out;
+}
+
+.weather-card:hover {
+    transform: translateY(-5px);
+}
+
+.current-weather {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+}
+.current-weather .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.weather-icon {
+    width: 100px;
+    height: 100px;
+}
+
+.temperature-display {
+    font-size: 5rem;
+    font-weight: 700;
+}
+
+.weather-detail-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    text-align: center;
+    height: 100%;
+}
+
+.current-weather .weather-detail-card {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.hourly-forecast-container {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+}
+.hourly-card {
+    text-align: center;
+    min-width: 90px;
+    padding: 0.5rem;
+    border-right: 1px solid #eee;
+}
+.hourly-card:last-child {
+    border-right: none;
+}
+.hourly-card img {
+    width: 50px;
+}
+
+.daily-card {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+}
+.daily-card:last-child {
+    border-bottom: none;
+}
+
+.footer {
+    background-color: #0056b3;
+    color: white;
+}
+
+/* NEW: Styles for the interactive map */
+#weatherMap {
+    height: 100%; /* Make map fill available space */
+    min-height: 250px; /* Ensure map has a minimum height */
+    width: 100%;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Makes the map tiles inside have rounded corners */
+.leaflet-container {
+    border-radius: 0.75rem;
+}
