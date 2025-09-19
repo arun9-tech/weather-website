@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherNow | Advanced Animations</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+    
+    <!-- Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="weather-default">
+    <!-- NEW: Container for Animated Weather Particles -->
+    <div id="weather-particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-cloud-sun me-2"></i>WeatherNow</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <!-- Search Section -->
+        <div class="row mb-4">
+            <div class="col-md-8 mx-auto">
+                <div class="input-group search-box" id="searchBox">
+                    <input type="text" class="form-control form-control-lg" id="locationInput" placeholder="Search for a city...">
+                    <button class="btn btn-secondary" id="currentLocationBtn" title="Use my current location">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </button>
+                    <button class="btn btn-primary" id="searchBtn" title="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="d-flex justify-content-center mt-3">
+                    <div class="unit-switcher">
+                        <div class="active-pill"></div>
+                        <button type="button" class="unit-btn active" data-unit="metric">°C, km/h</button>
+                        <button type="button" class="unit-btn" data-unit="imperial">°F, mph</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Weather -->
+        <div class="row mb-4 weather-content-row" id="currentWeatherRow">
+            <div class="col-12">
+                <!-- NEW: Container for 3D perspective -->
+                <div class="weather-card-container">
+                    <div class="card weather-card current-weather" id="interactiveCard">
+                        <div class="card-body p-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h2 id="currentLocation" class="mb-1">Loading...</h2>
+                                    <p id="currentDate" class="text-muted mb-3">Fetching date...</p>
+                                    <p id="weatherDescription" class="lead mb-4 weather-description-text">--</p>
+                                    <div class="d-flex align-items-center">
+                                        <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Weather icon" class="weather-icon me-3" id="weatherIcon">
+                                        <div class="temperature-display" id="currentTemp">--</div><span class="temperature-unit">°</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mt-3 mt-md-0" id="weatherDetailsContainer">
+                                        <div class="col-6 mb-3"><div class="weather-detail-card"><p class="mb-1"><i class="fas fa-temperature-high me-2"></i> Feels Like</p><h5><span id="feelsLike">--</span>°</h5></div></div>
+                                        <div class="col-6 mb-3"><div class="weather-detail-card"><p class="mb-1"><i class="fas fa-tint me-2"></i> Humidity</p><h5><span id="humidity">--</span>%</h5></div></div>
+                                        <div class="col-6 mb-3"><div class="weather-detail-card"><p class="mb-1"><i class="fas fa-wind me-2"></i> Wind</p><h5 id="windSpeed">--</h5></div></div>
+                                        <div class="col-6 mb-3"><div class="weather-detail-card"><p class="mb-1"><i class="fas fa-compress-alt me-2"></i> Pressure</p><h5><span id="pressure">--</span> hPa</h5></div></div>
+                                        <div class="col-6"><div class="weather-detail-card"><p class="mb-1"><i class="fas fa-sun me-2"></i> Sunrise</p><h5 id="sunrise">--:--</h5></div></div>
+                                        <div class="col-6"><div class="weather-detail-card"><p class="mb-1"><i class="fas fa-moon me-2"></i> Sunset</p><h5 id="sunset">--:--</h5></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forecasts and Map -->
+        <div class="row weather-content-row" id="forecastsRow">
+            <div class="col-lg-8 mb-4">
+                <div class="card weather-card mb-4">
+                    <div class="card-body"><h4 class="card-title mb-3"><i class="fas fa-clock me-2"></i> Hourly Forecast</h4><div class="hourly-forecast-container" id="hourlyForecast"></div></div>
+                </div>
+                <div class="card weather-card">
+                    <div class="card-body"><h4 class="card-title mb-3"><i class="fas fa-calendar-alt me-2"></i> 5-Day Forecast</h4><div id="dailyForecast"></div></div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="card weather-card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title mb-3"><i class="fas fa-wind me-2"></i> Air Quality</h4>
+                        <div class="weather-detail-card mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2"><h5 class="mb-0">AQI</h5><span class="badge bg-secondary" id="aqiValue">--</span></div>
+                            <div class="progress" style="height: 10px;"><div id="aqiIndicator" class="progress-bar" role="progressbar" style="width: 0%;"></div></div>
+                            <p class="small mt-2 mb-1" id="aqiDescription">Loading...</p>
+                        </div>
+                        <h4 class="card-title mt-3 mb-3"><i class="fas fa-map-marked-alt me-2"></i> Location Map</h4>
+                        <div id="weatherMap" class="flex-grow-1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer py-3 mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">© <span id="currentYear"></span> WeatherNow. All rights reserved. Data by OpenWeatherMap.</p>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal fade" id="weatherDetailModal" tabindex="-1" aria-labelledby="weatherDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="weatherDetailModalLabel">Daily Weather Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyContent"><p>Loading details...</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Libraries -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>
