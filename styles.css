@@ -1,0 +1,92 @@
+/* --- Animation Keyframes --- */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+@keyframes slideInUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes fall { 0% { transform: translateY(-10vh) rotate(3deg); } 100% { transform: translateY(110vh) rotate(-3deg); } }
+@keyframes border-animation { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
+
+/* --- General Styles --- */
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 1s ease; }
+.navbar { background-color: transparent !important; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.footer { background-color: transparent; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+
+/* --- Live Animated Background (Rain/Snow) --- */
+#weather-particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+.particle { position: absolute; border-radius: 50%; animation-iteration-count: infinite; animation-timing-function: linear; }
+.rain-drop { background-color: rgba(174,194,224,0.5); width: 2px; height: 15px; animation-name: fall; }
+.snow-flake { background-color: rgba(255,255,255,0.8); width: 5px; height: 5px; animation-name: fall; }
+
+/* --- MODIFIED: PERMANENT BACKGROUND COLOR AND THEME --- */
+/* The default theme now uses your chosen color and will not be changed by JavaScript. */
+.weather-default { 
+    background: #2193b0; 
+    color: white;
+}
+.weather-default .weather-card { 
+    background-color: rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(10px); 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    color: white; 
+}
+.weather-default .text-muted { color: rgba(255, 255, 255, 0.7) !important; }
+.weather-default .search-box .form-control { background-color: rgba(255,255,255,0.9); color: #333; }
+.weather-default .daily-card, 
+.weather-default .hourly-card { 
+    border-color: rgba(255,255,255,0.2); 
+}
+
+/* --- Search Box & Loading Animation --- */
+.search-box { position: relative; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); border-radius: 0.5rem; transition: box-shadow 0.3s ease; padding: 2px; }
+.search-box .input-group { border-radius: inherit; }
+.search-box:focus-within { box-shadow: 0 6px 25px rgba(0, 123, 255, 0.3); }
+.search-box .form-control { border: none; }
+.search-box .btn { border: none; transition: transform 0.2s ease, background-color 0.2s ease; }
+.search-box .btn:hover { transform: scale(1.1); }
+.search-box.is-loading { background: linear-gradient(90deg, #6dd5ed, #ffffff, #6dd5ed); background-size: 200% 200%; animation: border-animation 2s infinite linear; }
+
+/* --- Sliding Unit Switcher --- */
+.unit-switcher { position: relative; display: inline-flex; background-color: rgba(0,0,0,0.1); border-radius: 20px; padding: 4px; }
+.unit-switcher .unit-btn { background: none; border: none; color: white; padding: 6px 20px; cursor: pointer; position: relative; z-index: 2; transition: color 0.4s ease; font-size: 0.9rem; }
+.unit-switcher .unit-btn.active { color: #0056b3; }
+.unit-switcher .active-pill { position: absolute; top: 4px; left: 4px; width: 0; height: calc(100% - 8px); background-color: white; border-radius: 16px; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); z-index: 1; }
+
+/* --- Content Fade Transition --- */
+.weather-content-row { transition: opacity 0.4s ease, transform 0.4s ease; }
+.weather-content-row.is-loading { opacity: 0; transform: scale(0.98); }
+
+/* --- Weather Cards & 3D Effect --- */
+.weather-card-container { perspective: 1000px; }
+.weather-card { border: none; border-radius: 1rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
+.weather-card:hover { transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); }
+.current-weather { transition: transform 0.1s ease-out; transform-style: preserve-3d; }
+.weather-icon { width: 100px; height: 100px; animation: pulse 4s ease-in-out infinite; }
+.temperature-display { font-size: 5rem; font-weight: 700; line-height: 1; }
+.temperature-unit { font-size: 3rem; font-weight: 300; vertical-align: top; }
+.weather-detail-card { padding: 1rem; border-radius: 0.75rem; text-align: center; height: 100%; transition: background-color 0.3s; }
+.weather-detail-card h5 { margin-bottom: 0; }
+.weather-detail-card i { transition: transform 0.2s ease, color 0.2s ease; }
+.weather-detail-card:hover i { transform: scale(1.2) rotate(-10deg); color: #00c6ff; }
+.current-weather .weather-detail-card { background-color: rgba(255, 255, 255, 0.15); }
+
+/* --- Typewriter Effect --- */
+.weather-description-text::after { content: '_'; opacity: 1; animation: pulse 0.7s infinite; }
+.weather-description-text.finished::after { content: ''; }
+
+/* --- Forecasts & Cascade Animation --- */
+.hourly-forecast-container .hourly-card, #dailyForecast .daily-card { opacity: 0; animation: fadeInUp 0.5s ease-out forwards; }
+.hourly-forecast-container { display: flex; overflow-x: auto; padding-bottom: 1rem; }
+.hourly-card { text-align: center; min-width: 90px; padding: 0.5rem; border-right: 1px solid #eee; transition: background-color 0.2s ease; border-radius: 0.5rem; }
+.hourly-card:hover { background-color: rgba(0,0,0,0.1); cursor: pointer; }
+.hourly-card:last-child { border-right: none; }
+.hourly-card img { width: 50px; }
+.daily-card { padding: 0.75rem; border-bottom: 1px solid #eee; transition: background-color 0.2s ease, transform 0.2s ease; border-radius: 0.5rem; }
+.daily-card:hover { background-color: rgba(0,0,0,0.1); transform: translateX(10px); cursor: pointer; }
+.daily-card:last-child { border-bottom: none; }
+
+/* --- Map & Modal Styles --- */
+#aqiIndicator { transition: width 0.5s ease-in-out; }
+#weatherMap { min-height: 250px; width: 100%; border-radius: 0.75rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+.leaflet-container { border-radius: 0.75rem; }
+/* Override Bootstrap Modal Animation */
+.modal.fade .modal-dialog { transform: translateY(50px); opacity: 0; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease; }
+.modal.show .modal-dialog { transform: translateY(0); opacity: 1; }
